@@ -1,146 +1,108 @@
-🤖 Automated Customer Ticket Triage and LLM Response Generator
-This project implements an end-to-end customer support automation pipeline. It uses a Many-to-One Recurrent Neural Network (RNN) for automatic ticket classification and integrates the Google Gemini API to generate instant, empathetic customer acknowledgement replies.
+# 🤖 Automated Customer Ticket Triage and LLM Response Generator
 
-🚀 Project Goal
-The objective is to address the challenge of manually sorting thousands of daily support tickets. By automating classification and initial response generation, the system aims to reduce misclassification delays, lower operational costs, and instantly improve customer satisfaction.
+[cite\_start]This project implements an end-to-end customer support automation pipeline[cite: 40]. [cite\_start]It uses a **Many-to-One Recurrent Neural Network (RNN)** to automatically classify ticket body text [cite: 7] [cite\_start]and integrates the **Google Gemini API** to generate instant, empathetic customer acknowledgement replies[cite: 8].
 
+-----
 
+## 🚀 Project Goal
 
-✨ Key Features & Business Impact
-Feature	Description	Business Use Case
-Automatic Classification	
-Uses a Many-to-One LSTM model to categorize ticket body text (
+[cite\_start]The objective is to address the challenge of manually sorting thousands of daily support tickets[cite: 5]. [cite\_start]By automating classification and initial response generation, the system aims to reduce misclassification delays, lower operational costs, and instantly improve customer satisfaction[cite: 6, 14].
 
-body) into the correct department (queue).
+-----
 
+## ✨ Key Features & Business Impact
 
-Automatically routes tickets to the correct department (e.g., Billing, Technical Support).
+| Feature | Description | Business Use Case |
+| :--- | :--- | :--- |
+| **Automatic Classification** | [cite\_start]Uses a Many-to-One RNN/LSTM model [cite: 29] [cite\_start]to categorize ticket body text (`body`) [cite: 23, 54] [cite\_start]into the correct department (`queue`)[cite: 24, 55]. | [cite\_start]Automatically routes tickets to the correct department (e.g., Billing, Technical Support, Account Services)[cite: 10]. |
+| **Generative AI Response** | [cite\_start]Integrates the Gemini 2.5 Pro API [cite: 35, 66] [cite\_start]to draft a polite, generic acknowledgment reply[cite: 36]. | [cite\_start]Reduces response times by pre-drafting acknowledgments [cite: 11] [cite\_start]and providing instant, empathetic replies to customers[cite: 14]. |
+| **Full Pipeline Automation** | [cite\_start]Creates a prototype pipeline that classifies, routes, and replies to customer tickets[cite: 40], minimizing manual triage. | [cite\_start]Leads to faster ticket resolution [cite: 11] [cite\_start]and significant cost optimization[cite: 13]. |
 
-Generative AI Response	
-Integrates the Gemini 2.5 Pro API to draft a polite, generic acknowledgement reply immediately after classification.
+-----
 
+## 💻 Technical Stack
 
-Reduces response times by pre-drafting acknowledgments and providing instant, empathetic replies.
+  * [cite\_start]**Deep Learning:** RNN [cite: 49][cite\_start], LSTM [cite: 49][cite\_start], Keras/TensorFlow[cite: 66].
+  * [cite\_start]**Generative AI:** Google Gemini API [cite: 49, 66] (using the `google-genai` SDK).
+  * [cite\_start]**Natural Language Processing (NLP):** NLP [cite: 49][cite\_start], Text Preprocessing & Tokenization[cite: 26].
+  * [cite\_start]**Data:** Hugging Face Dataset[cite: 51].
+  * [cite\_start]**Language:** Python[cite: 66].
 
+-----
 
+## ⚙️ Setup and Installation
 
-Full Pipeline Automation	
-Creates a prototype pipeline that classifies, routes, and replies to customer tickets, minimizing manual triage.
+### 1\. Install Dependencies
 
-
-
-Leads to faster ticket resolution and significant cost optimization.
-
-
-
-Export to Sheets
-💻 Technical Stack
-
-Deep Learning: RNN, LSTM, Keras/TensorFlow.
-
-
-
-Generative AI: Google Gemini API (using google-genai SDK).
-
-
-
-Natural Language Processing (NLP): Text Preprocessing, Tokenization, Padding.
-
-
-Data: Hugging Face Datasets (Tobi-Bueck/customer-support-tickets).
-
-
-Language: Python.
-
-⚙️ Setup and Installation
-1. Clone the Repository
-Bash
-
-git clone <YOUR_REPO_URL>
-cd <your-project-directory>
-2. Install Dependencies
-Bash
-
+```bash
 pip install datasets pandas numpy scikit-learn tensorflow keras
 pip install google-genai
-3. Configure Gemini API Key
-The project relies on the GEMINI_API_KEY environment variable. The genai.Client() will automatically pick this up.
+```
 
-For local execution (Terminal/Shell):
+### 2\. Configure Gemini API Key
 
-Bash
+[cite\_start]The project relies on setting the Google Gemini API key securely[cite: 72]. The `genai.Client()` will attempt to automatically pick this up from the environment variable named `GEMINI_API_KEY` or `GOOGLE_API_KEY`.
 
+**For local execution (Terminal/Shell):**
+
+```bash
 export GEMINI_API_KEY="YOUR_API_KEY_HERE"
-For Jupyter/Colab Notebooks (Best Practice):
+# [cite_start]Note: Ensure API keys are kept secure and not committed to source control[cite: 72].
+```
 
-Python
+**For Jupyter/Colab Notebooks:**
 
+```python
 import os
-# Replace 'YOUR_API_KEY' with a SECURE method (e.g., reading from a local .env file or Colab Secrets)
-os.environ['GEMINI_API_KEY'] = 'YOUR_API_KEY_HERE' 
-📚 Data Source
-The project uses the following public dataset:
+# Recommended: Use a secure method like Colab Secrets to store and retrieve your key.
+# e.g., os.environ['GEMINI_API_KEY'] = userdata.get('GEMINI_API_KEY') 
 
+from google import genai
+# The client automatically uses the environment variable:
+# client = genai.Client()
+```
 
-Source: Hugging Face - Tobi-Bueck/customer-support-tickets.
+-----
 
+## 📚 Data Source
 
-Key Fields:
+[cite\_start]The project uses the following public dataset[cite: 50]:
 
+  * [cite\_start]**Source:** Hugging Face - `Tobi-Bueck/customer-support-tickets`[cite: 51].
+  * **Key Fields:**
+      * [cite\_start]`body`: The customer's ticket body text (Input)[cite: 23, 54, 60].
+      * [cite\_start]`queue`: The target department label (Target)[cite: 24, 55, 61].
 
-body: The customer's ticket text (Input).
+### Data Loading Command
 
-
-
-queue: The target department label (Target).
-
-
-Data Loading Command
 You can load the dataset using the following commands:
 
-Python
-
+```python
 from datasets import load_dataset
 ds = load_dataset("Tobi-Bueck/customer-support-tickets")
-✅ Evaluation Metrics
-Model success is measured across several dimensions:
+```
 
-Classification Model (RNN/LSTM)
+-----
 
-Accuracy: Overall correctness of queue prediction.
+## ✅ Evaluation Metrics
 
+[cite\_start]Model success is measured across several dimensions[cite: 41]:
 
+### Classification Model (RNN/LSTM)
 
+  * [cite\_start]**Classification Accuracy** [cite: 42]
+  * [cite\_start]**Precision, Recall, and F1-Score** (per queue category) [cite: 43]
+  * [cite\_start]**Confusion Matrix** (for understanding misclassifications) [cite: 44]
 
-Precision, Recall, F1-Score: Performance metrics, calculated per queue category, to understand model effectiveness across different departments.
+### Generative AI Reply
 
+  * [cite\_start]**Quality of Generated Replies** (manual/subjective evaluation for politeness and helpfulness)[cite: 45].
 
+-----
 
-Confusion Matrix: Used for diagnosing specific misclassifications between queues.
+## 📝 Project Deliverables
 
-Generative AI Reply
-
-Quality of Generated Replies: Subjective evaluation based on politeness, empathy, and helpfulness (acknowledgment and assurance).
-
-
-🤝 Skills Taken Away
-Text Preprocessing & Tokenization.
-
-Sequence Modeling using RNN/LSTM.
-
-Model Evaluation and Interpretation.
-
-Integration of Machine Learning with Generative AI (Gemini 2.5 Pro API).
-
-Prompt Engineering for structured LLM output.
-
-📝 Project Deliverables
-
-ticket_classification_lstm_model.h5: The trained LSTM model file.
-
-
-tokenizer.pickle, label_encoder.pickle: Files for preprocessing new data.
-
-Automatic_Ticket_Classification_with_LLM_Reply.ipynb: The end-to-end execution notebook.
-
-Source code in Python for the full pipeline.
+  * [cite\_start]**Source Code** (Python, PyTorch/Keras for RNN model + Google Gemini integration)[cite: 66].
+  * [cite\_start]**Documentation** (Project report with methodology, dataset explanation, results)[cite: 67].
+  * [cite\_start]**Trained Model** files[cite: 67].
+  * [cite\_start]**Sample Outputs** (predicted queue + Google Gemini-generated reply)[cite: 68].
